@@ -12,234 +12,124 @@
 
 #include "../includes/allocation.h"
 
-t_piece		*create_piece(t_piece *pieces_head, size_t size, t_area *area)
-{
-    t_piece	*piece;
-    t_piece *current;
-
-    current = pieces_head;
-    if (current)
-        while (current->next)
-            current = current->next;
-    ft_putstr("it is somewhere here\n");
-    if (!current)
-        piece = (t_piece*)(area + 1);
-    else
-        piece = (t_piece*)((current + 1) + current->size);
-    ft_putstr("it is somewhere in the middle\n");
-    if (!piece)
-        ft_putstr("in if\n");
-    else
-        ft_putstr("in else\n");
-    piece->size = size;
-    ft_putstr("it is somewhere here in the middle 2\n");
-    piece->is_free = 0;
-    piece->area = area;
-    piece->next = NULL;
-    piece->prev = NULL;
-    ft_putstr(" after somewhere here\n");
-    printf("Size %d\n", piece->size);
-    printf("Area free space %d\n", piece->area->free_space);
-
-    if (current)
-    {
-        current->next = piece;
-        piece->prev = current;
-    }
-    if (!area->pieces)
-        area->pieces = piece;
-    return piece;
-}
-
-
-t_piece		*search_free_piece(t_piece *last_piece, size_t size)
-{
-    t_piece *current;
-
-    current = last_piece;
-    while (current && !(current->is_free && current->size >= size))
-    {
-//        *last_piece = current;
-        current = current->next;
-    }
-    return current;
-}
-
-t_area		*create_area(t_area *current, size_t size, int type)
-{
-    t_area	*area;
-//    t_area	*area_check;
-
-//    if (!current)
-//        area = sbrk(0);
-//    else
-//    area = sbrk(size + AREA_META_BLOCK_SIZE);
-//    if (area_check == (void*) - 1)
-//        return NULL;
-    if (current)
-        area = mmap(current + 1 + current->total_size, size + AREA_META_BLOCK_SIZE, PROT_READ |
-                               PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-    else
-        area = mmap(NULL, size + AREA_META_BLOCK_SIZE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-    if (current)
-        current->next = area;
-    area->total_size = size;
-    area->free_space = size;
-    area->pieces = NULL;
-    area->type = type;
-    area->next =NULL;
-    return area;  // hz about this
-}
-
 int         get_area_type(size_t size)
 {
-    int type;
-
-    if (size <= TINY_SIZE)
-        type = TINY;
-    else if (size <= SMALL_SIZE)
-        type = SMALL;
+    if (size < TINY_SIZE)
+        return (TINY - 1);
+    else if (size < SMALL_SIZE)
+        return (SMALL - 1);
     else
-        type = LARGE;
-    return type;
+        return (LARGE - 1);
 }
 
-t_area		*search_free_area(t_area **last_area, size_t size, int type)
+static int		check_size(const size_t size)
 {
-    t_area *current;
+    struct rlimit limit;
 
-    current = g_pointer;
-    while (current && (current->free_space < size + PIECE_META_BLOCK_SIZE || current->type != type))
-    {
-        *last_area = current;
-        current = current->next;
-    }
-    return current;
+    if (size == 0)
+        return (0);
+    else if (getrlimit(RLIMIT_AS, &limit) == -1 || limit.rlim_cur < size)
+        return (0);
+    else if (getrlimit(RLIMIT_DATA, &limit) == -1 || limit.rlim_cur < size)
+        return (0);
+    else
+        return (1);
 }
 
-t_area  *area_creation_manager(t_area *current, size_t size)
+t_piece     *create_piece(t_area *area, size_t size)
 {
-    int     type;
-    size_t  area_size;
+    t_piece *piece;
+    void    *map;
 
-    if (size <= TINY_SIZE)
+    if (!check_size(size))
+        return (NULL);
+    map = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    if (!map)
+        return (NULL);
+    piece = (t_piece*)map;
+    piece->size = size - PIECE_META_BLOCK_SIZE;
+    piece->is_free = 1;
+    piece->next = NULL;
+    if (area->last_piece)
+        area->last_piece->next = piece;
+    if (!area->first_piece)
+        area->first_piece = piece;
+    area->last_piece = piece;
+    return (piece);
+}
+
+t_piece      *create_area(t_area *area, int create)
+{
+    size_t necessary_size;
+
+    necessary_size = getpagesize() * (area->type);
+    necessary_size *= (create ? SIZE_COEFFICIENT : 1);
+    return (create_piece(area, necessary_size));
+}
+
+t_area      *get_area(size_t size)
+{
+    static  t_area areas[3] = {
+            {TINY, NULL, NULL, NULL},
+            {SMALL, NULL, NULL, NULL},
+            {LARGE, NULL, NULL, NULL}
+    };
+
+    if (!areas[TINY].first_piece)
+        create_area(&areas[TINY], 1);
+    if (!areas[SMALL].first_piece)
+        create_area(&areas[SMALL], 1);
+    return (areas + get_area_type(size));
+}
+
+
+void        devide_piece(t_piece *piece, size_t size)
+{
+    t_piece *new_piece;
+    size_t  specified_value;
+
+    specified_value = size + PIECE_META_BLOCK_SIZE * 2;
+    if (piece->size >= specified_value)
     {
-        type = TINY;
-        area_size = (TINY_SIZE + PIECE_META_BLOCK_SIZE) * SIZE_COEFFICIENT;
+        new_piece = (void*)piece + specified_value;
+        new_piece->size = piece->size - specified_value;
+        new_piece->is_free = 1;
+        new_piece->next = piece->next;
+        piece->size = size;
+        piece->next = new_piece;
     }
-    else if (size <= SMALL_SIZE)
-    {
-        type = SMALL;
-        area_size = (SMALL_SIZE + PIECE_META_BLOCK_SIZE) * SIZE_COEFFICIENT;
-    }
-    else
-    {
-        type = LARGE;
-        area_size = size + PIECE_META_BLOCK_SIZE;
-    }
-    return create_area(current, area_size, type);
+}
+
+t_piece     *get_piece(size_t size)
+{
+    t_area  *area;
+    t_piece *piece;
+
+    area = get_area(size);
+    if (area->type == LARGE)
+        return (create_piece(area, size));
+    piece = area->first_piece;
+    while (piece && !(piece->is_free && piece->size >= size))
+        piece = piece->next;
+    if (!piece)
+        piece = create_area(area, 0);
+    if (piece->size > size)
+        devide_piece(piece, size);
+    return piece;
 }
 
 void		*ft_malloc(size_t size)
 {
-	t_piece	*piece;
-	t_area  *area;
-	t_area	*current_area;
+    t_piece *piece;
 
-    current_area = (t_area*)g_pointer;
-    printf("Pointer to g_pointer: %p\n", (t_area*)g_pointer);
-	if (!size)
-		return (NULL);
-	if (!current_area)
-    {
-	    if (!(area = area_creation_manager(current_area, size)))
-            return NULL;
-	    g_pointer = area;
-	    piece = create_piece(NULL, size, area);
-        area->free_space -= size + PIECE_META_BLOCK_SIZE;
-    }
-	else
-    {
-	    area = search_free_area(&current_area, size, get_area_type(size));
-	    if (!area)
-        {
-            if (!(area = area_creation_manager(current_area, size)))
-                return NULL;
-        }
-        if (!(piece = search_free_piece(area->pieces, size)))
-        {
-            piece = create_piece(area->pieces, size, area);
-            area->free_space -= size + PIECE_META_BLOCK_SIZE;
+    if (!size)
+        return (NULL);
 
-        }
-        else
-        {
-            printf("Fuck off creation\n");
-            piece->is_free = 0;
-            piece->size = size;
-            area->free_space -= size;
-        }
+    piece = get_piece(size);
+    if (piece) {
+        piece->is_free = 0;
+        return ((void *) piece + PIECE_META_BLOCK_SIZE);
     }
-	printf("Finishing MALLOC\n");
-	return (piece + 1);
+    else
+        return (NULL);
 }
-
-
-
-
-
-
-//int main( int argc, const char* argv[] )
-//{
-//    char *array[100];
-//    char *text;
-//
-//    int i = 1;
-//    while (i < 101)
-//    {
-//        array[i - 1] = ft_malloc(i * 5);
-//        ft_memset(array[i - 1], 'a', i * 5 - 1);
-//        array[i - 1][i * 5 - 1] = '\n';
-//        array[i - 1][i * 5] = '\0';
-//        ft_putstr(array[i - 1]);
-//        i++;
-//    }
-//    i = 0;
-//    while (i < 100)
-//    {
-//        ft_free(array[i]);
-//        i++;
-//    }
-//
-//
-//    i = 1;
-//    while (i < 101)
-//    {
-//        array[i - 1] = ft_malloc(i * 5);
-//        ft_memset(array[i - 1], 'a', i * 5 - 1);
-//        array[i - 1][i * 5 - 1] = '\n';
-//        array[i - 1][i * 5] = '\0';
-//        ft_putstr(array[i - 1]);
-//        i++;
-//    }
-//    i = 0;
-//    while (i < 100)
-//    {
-//        ft_free(array[i]);
-//        i++;
-//    }
-//
-//
-//    return 0;
-//}
-
-//int main()
-//{
-//    char *addr;
-//
-//    addr = ft_malloc(16);
-//    ft_free(NULL);
-//    ft_free((void *)addr + 5);
-//    if (ft_realloc((void *)addr + 5, 10) == NULL)
-//        ft_putstr("Bonjour\n");
-//}

@@ -20,18 +20,18 @@ int	test1(void)
 	char *ptr;
 
 	ft_putstr("\n================== TEST - 1 =======================\n");
-	memset(a, 'A', SIZE);
+	ft_memset(a, 'A', SIZE);
 	a[SIZE] = 0;
 	ptr = ft_malloc(SIZE + 1);
-	strcpy(ptr, a);
+	ft_strcpy(ptr, a);
 	ft_free(ptr);
 	ptr = ft_malloc(SIZE + 1);
-//	show_alloc_mem();
-	memset(a, 'B', SIZE);
+	show_alloc_mem();
+	ft_memset(a, 'B', SIZE);
 	a[SIZE] = 0;
 	ptr = ft_realloc(ptr, 2 * SIZE);
-	strcat(ptr, a);
-//	show_alloc_mem();
+	ft_strcat(ptr, a);
+	show_alloc_mem();
 	ft_free(ptr);
 	return (0);
 }
@@ -66,7 +66,7 @@ int	test2(void)
 		ft_free(a[i]);
 		i++;
 	}
-    printf("after free spacdrgehrscter6hyrty6e\n");
+//    printf("after free spacdrgehrscter6hyrty6e\n");
 
     return (0);
 }
@@ -196,6 +196,7 @@ int test9()
 {
     char *addr;
 
+    ft_putstr("\n================== TEST - 9 =======================\n");
     addr = ft_malloc(16);
     ft_free(NULL);
     ft_free((void *)addr + 5);
@@ -205,6 +206,8 @@ int test9()
 
 int test10()
 {
+    ft_putstr("\n================== TEST - 10 =======================\n");
+
     ft_malloc(1024);
     ft_malloc(1024 * 32);
     ft_malloc(1024 * 1024);
@@ -217,15 +220,15 @@ int test10()
 
 int	main(void)
 {
-//	test1();
+	test1();
 	test2();
 	test3();
 	test4();
 	test5();
-//	test6();
-//	test7();
-//	test8();
-//	test9();
-//	test10();
+	test6();
+	test7();
+	test8();
+	test9();
+	test10();
 	return (0);
 }

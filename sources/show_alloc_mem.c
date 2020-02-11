@@ -12,49 +12,53 @@
 
 #include "../includes/allocation.h"
 
-void	show_memarea_info(t_area *memarea)
+char    *area_type_name(int area_index)
 {
-	if (memarea->type == 1)
-		ft_printf("TINY : %p\n", (long)&memarea);
-	else if (memarea->type == 2)
-		ft_printf("SMALL : %p\n", (long)&memarea);
-	else
-		ft_printf("LARGE : %p\n", (long)&memarea);
+    if (area_index == TINY)
+        return ("TINY");
+    else if (area_index == SMALL)
+        return ("SMALL");
+    else
+        return ("LARGE");
 }
 
-int		show_piece_info(t_piece *piece)
+int		show_area_info(int area_index)
 {
-	int		total_bytes;
+	size_t		total_bytes;
+    t_area      *area;
+    t_piece     *piece;
 
 	total_bytes = 0;
+	area = get_area(0) + area_index;
+	piece = area->first_piece;
+//	if (area->first_piece)
+//    	ft_printf("Area start : %p", area->first_piece);
+//    else
+//        ft_printf("Area start : Not allocated.");
 	while (piece)
 	{
-	    if (piece->is_free == 0)
+	    if (!piece->is_free)
         {
-            ft_printf("%p - %p : %d bytes\n", (long)&piece,
-                      (long)&piece + piece->size, (int)piece->size);
+            ft_printf("%p - %p : %d bytes.", (void*)piece + PIECE_META_BLOCK_SIZE,
+                      (void*)piece + PIECE_META_BLOCK_SIZE + piece->size, piece->size);
             total_bytes += piece->size;
         }
         piece = piece->next;
-
     }
 	return (total_bytes);
 }
 
 void	show_alloc_mem(void)
 {
-	t_area	*memarea;
-	t_piece		*piece;
-	int			total_bytes;
+	int		i;
+	size_t	total_bytes;
 
+	i = 0;
 	total_bytes = 0;
-	memarea = (t_area *)g_pointer;
-	while (memarea)
+	while (i < 3)
 	{
-		piece = memarea->pieces;
-		show_memarea_info(memarea);
-		total_bytes += show_piece_info(piece);
-		memarea = memarea->next;
+		total_bytes += show_area_info(i);
+		i++;
 	}
 	ft_printf("Total : %d bytes\n",total_bytes);
 }

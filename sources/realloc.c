@@ -12,19 +12,41 @@
 
 #include "../includes/allocation.h"
 
+void        *realloc_add(void *ptr, size_t size)
+{
+    t_piece *piece;
+    void    *memory;
+
+    memory = NULL;
+    piece = (t_piece*)(ptr - PIECE_META_BLOCK_SIZE);
+    if (!piece->is_free)
+    {
+        if (piece->size >= size)
+            memory = ptr;
+        else if ((memory = ft_malloc(size)))
+        {
+            ft_memcpy(memory, ptr, piece->size);
+            ft_free(ptr);
+        }
+    }
+    return (memory);
+}
+
 void		*ft_realloc(void *ptr, size_t size)
 {
-    void *reallocated_ptr;
-
-    reallocated_ptr = NULL;
     if (!ptr)
         return ft_malloc(size);
-    t_piece *piece = (t_piece*)ptr - 1;
-    if (piece->size >= size)
-        return ptr;
-    if (!(reallocated_ptr = ft_malloc(size)))
-        return NULL;
-    ft_memcpy(reallocated_ptr, ptr, piece->size);
-    ft_free(ptr);
-    return reallocated_ptr;
+    else if (!size)
+    {
+        ft_free(ptr);
+        ptr = NULL;
+    }
+    else
+    {
+        if (is_valid(ptr))
+            ptr = realloc_add(ptr, size);
+        else
+            return NULL;
+    }
+    return (ptr);
 }
