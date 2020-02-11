@@ -19,41 +19,42 @@
 # include <sys/mman.h>
 # include "../ft_printf/src/print.h"
 
+# define SIZE_COEFFICIENT 100
 # define TINY 1
 # define SMALL 2
 # define LARGE 3
 # define TINY_SIZE 128
 # define SMALL_SIZE 1024
-# define PAGE_SIZE sysconf(_SC_PAGESIZE)
+# define PIECE_META_BLOCK_SIZE sizeof(struct s_piece)
+# define AREA_META_BLOCK_SIZE sizeof(struct s_area)
 
 typedef struct			s_piece
 {
 	size_t				size;
-	void				*address;
-	void                *memarea;
-    int                 free;
+    int                 is_free;
+    struct s_area       *area;
 	struct s_piece		*next;
+	struct s_piece		*prev;
 }						t_piece;
 
-typedef struct			s_memarea
+typedef struct			s_area
 {
 	int					type;
 	size_t				total_size;
 	size_t				free_space;
 	t_piece				*pieces;
-	void				*address;
-	struct s_memarea	*next;
-}						t_memarea;
+	struct s_area	    *next;
+}						t_area;
 
-void					*malloc(size_t size);
-void					free(void *ptr);
-void					*realloc(void *ptr, size_t size);
-void					show_alloc_mem();
-t_piece					*initate_piece(void *address, size_t size, t_memarea *memarea);
-t_piece					*add_piece(t_memarea *memarea, size_t size);
-int						get_memory_type(size_t size);
-void					*mem_mapping(t_memarea *memarea, size_t size);
-t_piece		            *add_f(t_piece *piece, size_t size, t_memarea *memarea);
-void					*g_memarea;
+void					*ft_malloc(size_t size);
+void					ft_free(void *ptr);
+void					*ft_realloc(void *ptr, size_t size);
+//void					show_alloc_mem();
+//t_piece					*initate_piece(void *address, size_t size, t_area *memarea);
+//t_piece					*add_piece(t_area *memarea, size_t size);
+//int						get_memory_type(size_t size);
+//void					*mem_mapping(t_area *memarea, size_t size);
+//t_piece		            *add_f(t_piece *piece, size_t size, t_area *memarea);
+void					*g_pointer;
 
 #endif
