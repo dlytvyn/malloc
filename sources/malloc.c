@@ -146,10 +146,8 @@ void		*ft_malloc(size_t size)
 	t_area  *area;
 	t_area	*current_area;
 
-
-	if (size == 455)
-	    printf("kkk");
     current_area = (t_area*)g_pointer;
+    printf("Pointer to g_pointer: %p\n", (t_area*)g_pointer);
 	if (!size)
 		return (NULL);
 	if (!current_area)
