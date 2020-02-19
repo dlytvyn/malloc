@@ -78,6 +78,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/lits-user/CLionProjects/malloc-final-printf/ft_printf/libft/ft_itoa_base.c">
+			<Option target="malloc-final-printf"/>
+		</Unit>
 		<Unit filename="/Users/lits-user/CLionProjects/malloc-final-printf/main.c">
 			<Option target="malloc-final-printf"/>
 		</Unit>

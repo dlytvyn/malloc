@@ -22,31 +22,31 @@ int         get_area_type(size_t size)
         return (LARGE - 1);
 }
 
-static int		check_size(const size_t size)
-{
-    struct rlimit limit;
-
-    if (size == 0)
-        return (0);
-    else if (getrlimit(RLIMIT_AS, &limit) == -1 || limit.rlim_cur < size)
-        return (0);
-    else if (getrlimit(RLIMIT_DATA, &limit) == -1 || limit.rlim_cur < size)
-        return (0);
-    else
-        return (1);
-}
+//static int		check_size(const size_t size)
+//{
+//    struct rlimit limit;
+//
+//    if (size == 0)
+//        return (0);
+//    else if (getrlimit(RLIMIT_AS, &limit) == -1 || limit.rlim_cur < size)
+//        return (0);
+//    else if (getrlimit(RLIMIT_DATA, &limit) == -1 || limit.rlim_cur < size)
+//        return (0);
+//    else
+//        return (1);
+//}
 
 t_piece     *create_piece(t_area *area, size_t size)
 {
     t_piece *piece;
-    void    *map;
+    void    *mapped_memory;
 
-    if (!check_size(size))
+//    if (!check_size(size))
+//        return (NULL);
+    if (!(mapped_memory = mmap(NULL, size, PROT_READ | PROT_WRITE,
+            MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)))
         return (NULL);
-    map = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-    if (!map)
-        return (NULL);
-    piece = (t_piece*)map;
+    piece = (t_piece*)mapped_memory;
     piece->size = size - PIECE_META_BLOCK_SIZE;
     piece->is_free = 1;
     piece->next = NULL;
@@ -75,10 +75,10 @@ t_area      *get_area(size_t size)
             {LARGE, NULL, NULL, NULL}
     };
 
-    if (!areas[TINY].first_piece)
-        create_area(&areas[TINY], 1);
-    if (!areas[SMALL].first_piece)
-        create_area(&areas[SMALL], 1);
+    if (!areas[0].first_piece)
+        create_area(&areas[0], 1);
+    if (!areas[1].first_piece)
+        create_area(&areas[1], 1);
     return (areas + get_area_type(size));
 }
 

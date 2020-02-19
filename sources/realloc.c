@@ -22,7 +22,7 @@ void        *realloc_add(void *ptr, size_t size)
     if (!piece->is_free)
     {
         if (piece->size >= size)
-            memory = ptr;
+            return (ptr);
         else if ((memory = ft_malloc(size)))
         {
             ft_memcpy(memory, ptr, piece->size);
@@ -43,7 +43,7 @@ void		*ft_realloc(void *ptr, size_t size)
     }
     else
     {
-        if (is_valid(ptr))
+        if (is_valid_pointer(ptr))
             ptr = realloc_add(ptr, size);
         else
             return NULL;

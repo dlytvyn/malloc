@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "includes/allocation.h"
-#define SIZE 370000
+#define SIZE 370
 
 int	test1(void)
 {
@@ -45,9 +45,6 @@ int	test2(void)
 	i = 0;
 	while (i < 50)
 	{
-	    ft_putstr("Here: ");
-	    ft_putnbr(i);
-        ft_putstr("\n");
         if (i == 90)
             ft_putstr("FOUND\n");
 		a[i] = ft_malloc(i * 32 + 7);
@@ -60,9 +57,6 @@ int	test2(void)
 	i = 0;
 	while (i < 50)
 	{
-        ft_putstr("Free: i = ");
-        ft_putnbr(i);
-        ft_putstr("\n");
 		ft_free(a[i]);
 		i++;
 	}
@@ -123,13 +117,6 @@ int test5(void)
     i = 0;
     while (i < 1024)
     {
-        ft_putstr("test 5: ");
-        ft_putnbr(i);
-        ft_putstr("\n");
-
-        if (i == 8)
-            ft_putstr("fd");
-
         addr = (char*)ft_malloc(1024);
         addr[0] = 42;
         i++;

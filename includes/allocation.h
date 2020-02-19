@@ -50,7 +50,7 @@ void					*ft_malloc(size_t size);
 void					ft_free(void *ptr);
 void					*ft_realloc(void *ptr, size_t size);
 t_area                  *get_area(size_t size);
-int                     is_valid(void *ptr);
+int                     is_valid_pointer(void *ptr);
 void					show_alloc_mem();
 //t_piece					*initate_piece(void *address, size_t size, t_area *memarea);
 //t_piece					*add_piece(t_area *memarea, size_t size);

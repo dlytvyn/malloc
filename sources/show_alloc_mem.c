@@ -39,7 +39,16 @@ int		show_area_info(int area_index)
 	{
 	    if (!piece->is_free)
         {
-            ft_printf("%p - %p : %d bytes.", (void*)piece + PIECE_META_BLOCK_SIZE,
+	        ft_putstr("0x");
+	        ft_putstr(ft_itoa_base((void*)(piece + PIECE_META_BLOCK_SIZE), 16));
+            ft_putstr(" - ");
+            ft_putstr("0x");
+            ft_putnbr(ft_itoa_base((void*)(piece + PIECE_META_BLOCK_SIZE + piece->size), 16));
+            ft_putstr(" : ");
+            ft_putnbr(piece->size);
+            ft_putstr(" bytes.\n");
+
+            printf("Printf   %p - %p : %lu bytes.\n", (void*)piece + PIECE_META_BLOCK_SIZE,
                       (void*)piece + PIECE_META_BLOCK_SIZE + piece->size, piece->size);
             total_bytes += piece->size;
         }
@@ -60,5 +69,7 @@ void	show_alloc_mem(void)
 		total_bytes += show_area_info(i);
 		i++;
 	}
-	ft_printf("Total : %d bytes\n",total_bytes);
+	ft_putstr("Total : ");
+	ft_putnbr(total_bytes);
+	ft_putstr(" bytes.\n");
 }

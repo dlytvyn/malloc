@@ -12,7 +12,7 @@
 
 #include "../includes/allocation.h"
 
-int     is_valid(void *ptr)
+int     is_valid_pointer(void *ptr)
 {
     int     i;
     t_area  *area;
@@ -79,7 +79,7 @@ void    ft_free(void *ptr)
 {
     t_piece *piece;
 
-    if (is_valid(ptr))
+    if (is_valid_pointer(ptr))
     {
         piece = (t_piece*)(ptr - PIECE_META_BLOCK_SIZE);
         if (!piece->is_free)

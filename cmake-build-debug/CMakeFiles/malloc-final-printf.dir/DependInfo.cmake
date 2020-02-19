@@ -4,6 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
+  "/Users/lits-user/CLionProjects/malloc-final-printf/ft_printf/libft/ft_itoa_base.c" "/Users/lits-user/CLionProjects/malloc-final-printf/cmake-build-debug/CMakeFiles/malloc-final-printf.dir/ft_printf/libft/ft_itoa_base.c.o"
   "/Users/lits-user/CLionProjects/malloc-final-printf/main.c" "/Users/lits-user/CLionProjects/malloc-final-printf/cmake-build-debug/CMakeFiles/malloc-final-printf.dir/main.c.o"
   "/Users/lits-user/CLionProjects/malloc-final-printf/sources/free.c" "/Users/lits-user/CLionProjects/malloc-final-printf/cmake-build-debug/CMakeFiles/malloc-final-printf.dir/sources/free.c.o"
   "/Users/lits-user/CLionProjects/malloc-final-printf/sources/malloc.c" "/Users/lits-user/CLionProjects/malloc-final-printf/cmake-build-debug/CMakeFiles/malloc-final-printf.dir/sources/malloc.c.o"

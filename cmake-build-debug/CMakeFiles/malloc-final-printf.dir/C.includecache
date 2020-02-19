@@ -54,7 +54,7 @@ sys/mman.h
 ../ft_printf/src/print.h
 /Users/lits-user/CLionProjects/malloc-final-printf/ft_printf/src/print.h
 
-/Users/lits-user/CLionProjects/malloc-final-printf/sources/realloc.c
+/Users/lits-user/CLionProjects/malloc-final-printf/sources/show_alloc_mem.c
 ../includes/allocation.h
 /Users/lits-user/CLionProjects/malloc-final-printf/includes/allocation.h
 

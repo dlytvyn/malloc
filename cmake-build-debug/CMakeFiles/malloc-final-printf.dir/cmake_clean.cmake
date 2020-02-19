@@ -5,6 +5,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/malloc-final-printf.dir/sources/malloc_add.c.o"
   "CMakeFiles/malloc-final-printf.dir/sources/realloc.c.o"
   "CMakeFiles/malloc-final-printf.dir/sources/show_alloc_mem.c.o"
+  "CMakeFiles/malloc-final-printf.dir/ft_printf/libft/ft_itoa_base.c.o"
   "malloc-final-printf.pdb"
   "malloc-final-printf"
 )
