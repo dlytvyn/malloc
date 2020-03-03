@@ -53,6 +53,7 @@ SRC =   ft_memset.c\
 		ft_lstmap.c\
 		ft_strsplit.c\
 		ft_itoa.c\
+		ft_itoa_base.c\
 
 OBJECTS = ./*.o
 

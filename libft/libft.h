@@ -70,6 +70,7 @@ char				*ft_strnew(size_t size);
 char				**ft_strsplit(char const *s, char c);
 char				*ft_strsub(char const *s, unsigned int start, size_t len);
 char				*ft_strtrim(char const *s);
+char		        *ft_itoa_base(size_t n, int base);
 
 typedef struct		s_list
 {

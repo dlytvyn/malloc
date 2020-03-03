@@ -23,22 +23,22 @@ void        *realloc_add(void *ptr, size_t size)
     {
         if (piece->size >= size)
             return (ptr);
-        else if ((memory = ft_malloc(size)))
+        else if ((memory = malloc(size)))
         {
             ft_memcpy(memory, ptr, piece->size);
-            ft_free(ptr);
+            free(ptr);
         }
     }
     return (memory);
 }
 
-void		*ft_realloc(void *ptr, size_t size)
+void		*realloc(void *ptr, size_t size)
 {
     if (!ptr)
-        return ft_malloc(size);
+        return malloc(size);
     else if (!size)
     {
-        ft_free(ptr);
+        free(ptr);
         ptr = NULL;
     }
     else

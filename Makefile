@@ -11,9 +11,9 @@ INC_DIR		=	includes/
 OBJ_DIR		=	objects/
 
 
-LIBFT_DIR   = ft_printf/
-LIBFT_LIB	= $(LIBFT_DIR)libftprintf.a
-LIBFT_INC	= $(LIBFT_DIR)includes/
+LIBFT_DIR   = libft/
+LIBFT_LIB	= $(LIBFT_DIR)libft.a
+LIBFT_INC	= $(LIBFT_DIR)/
 
 
 TEST_DIR	=	tests/
@@ -39,8 +39,8 @@ all: $(OBJ_DIR) $(OBJS)
 	@make -C $(LIBFT_DIR)
 	@echo Compiling dynamic library
 	@$(CC) -shared -o $(NAME) $(OBJS) $(LIBFT_LIB)
-	@rm -rf $(SYM_NAME)
 	@ln -s $(NAME) $(SYM_NAME)
+	@rm -rf $(SYM_NAME)
 	@echo Compiling finished!
 
 

@@ -22,57 +22,12 @@ int         get_area_type(size_t size)
         return (LARGE - 1);
 }
 
-//static int		check_size(const size_t size)
-//{
-//    struct rlimit limit;
-//
-//    if (size == 0)
-//        return (0);
-//    else if (getrlimit(RLIMIT_AS, &limit) == -1 || limit.rlim_cur < size)
-//        return (0);
-//    else if (getrlimit(RLIMIT_DATA, &limit) == -1 || limit.rlim_cur < size)
-//        return (0);
-//    else
-//        return (1);
-//}
-
-t_piece     *create_piece(t_area *area, size_t size)
-{
-    t_piece *piece;
-    void    *mapped_memory;
-
-//    if (!check_size(size))
-//        return (NULL);
-    if (!(mapped_memory = mmap(NULL, size, PROT_READ | PROT_WRITE,
-            MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)))
-        return (NULL);
-    piece = (t_piece*)mapped_memory;
-    piece->size = size - PIECE_META_BLOCK_SIZE;
-    piece->is_free = 1;
-    piece->next = NULL;
-    if (area->last_piece)
-        area->last_piece->next = piece;
-    if (!area->first_piece)
-        area->first_piece = piece;
-    area->last_piece = piece;
-    return (piece);
-}
-
-t_piece      *create_area(t_area *area, int create)
-{
-    size_t necessary_size;
-
-    necessary_size = getpagesize() * (area->type);
-    necessary_size *= (create ? SIZE_COEFFICIENT : 1);
-    return (create_piece(area, necessary_size));
-}
-
 t_area      *get_area(size_t size)
 {
     static  t_area areas[3] = {
-            {TINY, NULL, NULL, NULL},
-            {SMALL, NULL, NULL, NULL},
-            {LARGE, NULL, NULL, NULL}
+            {TINY, 0, NULL, NULL, NULL},
+            {SMALL, 0, NULL, NULL, NULL},
+            {LARGE, 0, NULL, NULL, NULL}
     };
 
     if (!areas[0].first_piece)
@@ -118,7 +73,7 @@ t_piece     *get_piece(size_t size)
     return piece;
 }
 
-void		*ft_malloc(size_t size)
+void		*malloc(size_t size)
 {
     t_piece *piece;
 

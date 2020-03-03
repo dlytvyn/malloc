@@ -75,7 +75,7 @@ void    release_piece(t_area *area, t_piece *piece)
     }
 }
 
-void    ft_free(void *ptr)
+void    free(void *ptr)
 {
     t_piece *piece;
 

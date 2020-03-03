@@ -17,7 +17,7 @@
 # include <unistd.h>
 # include <stddef.h>
 # include <sys/mman.h>
-# include "../ft_printf/src/print.h"
+# include "../libft/libft.h"
 
 # define SIZE_COEFFICIENT 100
 # define TINY 1
@@ -32,9 +32,7 @@ typedef struct			s_piece
 {
 	size_t				size;
     int                 is_free;
-//    struct s_area       *area;
 	struct s_piece		*next;
-//	struct s_piece		*prev;
 }						t_piece;
 
 typedef struct			s_area
@@ -46,17 +44,13 @@ typedef struct			s_area
 	struct s_area	    *next;
 }						t_area;
 
-void					*ft_malloc(size_t size);
-void					ft_free(void *ptr);
-void					*ft_realloc(void *ptr, size_t size);
+void					*malloc(size_t size);
+void					free(void *ptr);
+void					*realloc(void *ptr, size_t size);
 t_area                  *get_area(size_t size);
 int                     is_valid_pointer(void *ptr);
 void					show_alloc_mem();
-//t_piece					*initate_piece(void *address, size_t size, t_area *memarea);
-//t_piece					*add_piece(t_area *memarea, size_t size);
-//int						get_memory_type(size_t size);
-//void					*mem_mapping(t_area *memarea, size_t size);
-//t_piece		            *add_f(t_piece *piece, size_t size, t_area *memarea);
-void					*g_pointer;
+t_piece                 *create_piece(t_area *area, size_t size);
+t_piece                 *create_area(t_area *area, int create);
 
 #endif

@@ -12,6 +12,25 @@
 
 #include "../includes/allocation.h"
 
+void    print_piece_address(t_piece *piece)
+{
+    char *start;
+    char *end;
+
+    start = ft_itoa_base((uint64_t)(void*)piece + PIECE_META_BLOCK_SIZE, 16);
+    end = ft_itoa_base((uint64_t)(void*)piece + PIECE_META_BLOCK_SIZE + piece->size, 16);
+    ft_putstr("0x");
+    ft_putstr(start);
+    ft_putstr(" - ");
+    ft_putstr("0x");
+    ft_putstr(end);
+    ft_putstr(" : ");
+    ft_putnbr(piece->size);
+    ft_putstr(" bytes.\n");
+    free(start);
+    free(end);
+}
+
 char    *area_type_name(int area_index)
 {
     if (area_index == TINY)
@@ -27,29 +46,24 @@ int		show_area_info(int area_index)
 	size_t		total_bytes;
     t_area      *area;
     t_piece     *piece;
+    char        *adress;
 
 	total_bytes = 0;
 	area = get_area(0) + area_index;
 	piece = area->first_piece;
-//	if (area->first_piece)
-//    	ft_printf("Area start : %p", area->first_piece);
-//    else
-//        ft_printf("Area start : Not allocated.");
+	ft_putstr(area_type_name(area_index));
+    adress = ft_itoa_base((uint64_t)(void*)area + AREA_META_BLOCK_SIZE, 16);
+	ft_putstr(" : 0x");
+    ft_putstr(adress);
+    free(adress);
+    ft_putstr("\n");
+    if (area->first_piece && area->first_piece->is_free)
+        ft_putendl("Area start : Not allocated.");
 	while (piece)
 	{
 	    if (!piece->is_free)
         {
-	        ft_putstr("0x");
-	        ft_putstr(ft_itoa_base((void*)(piece + PIECE_META_BLOCK_SIZE), 16));
-            ft_putstr(" - ");
-            ft_putstr("0x");
-            ft_putnbr(ft_itoa_base((void*)(piece + PIECE_META_BLOCK_SIZE + piece->size), 16));
-            ft_putstr(" : ");
-            ft_putnbr(piece->size);
-            ft_putstr(" bytes.\n");
-
-            printf("Printf   %p - %p : %lu bytes.\n", (void*)piece + PIECE_META_BLOCK_SIZE,
-                      (void*)piece + PIECE_META_BLOCK_SIZE + piece->size, piece->size);
+            print_piece_address(piece);
             total_bytes += piece->size;
         }
         piece = piece->next;
