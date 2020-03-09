@@ -31,7 +31,7 @@ void    print_piece_address(t_piece *piece)
     free(end);
 }
 
-void    *area_type_name(int area_index)
+void    area_type_name(int area_index)
 {
     if (area_index == TINY)
         ft_putstr("TINY");
