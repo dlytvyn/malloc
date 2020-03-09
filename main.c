@@ -194,29 +194,38 @@ int test9()
 
 int test10()
 {
+    char	*a[5];
+    int     i;
+
     ft_putstr("\n================== TEST - 10 =======================\n");
 
-    malloc(1024);
-    malloc(1024 * 32);
-    malloc(1024 * 1024);
-    malloc(1024 * 1024 * 16);
-    malloc(1024 * 1024 * 128);
+    a[0] = malloc(1024);
+    a[1] = malloc(1024 * 32);
+    a[2] = malloc(1024 * 1024);
+    a[3] = malloc(1024 * 1024 * 16);
+    a[4] = malloc(1024 * 1024 * 128);
     show_alloc_mem();
+    i = 0;
+    while (i < 5)
+    {
+        free(a[i]);
+        i++;
+    }
     return (0);
 }
 
 
 int	main(void)
 {
-//	test1();
-//	test2();
-//	test3();
-//	test4();
-//	test5();
-//	test6();
-//	test7();
-//	test8();
-//	test9();
+	test1();
+	test2();
+	test3();
+	test4();
+	test5();
+	test6();
+	test7();
+	test8();
+	test9();
 	test10();
 	return (0);
 }

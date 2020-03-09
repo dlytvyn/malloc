@@ -26,19 +26,19 @@ void    print_piece_address(t_piece *piece)
     ft_putstr(end);
     ft_putstr(" : ");
     ft_putnbr(piece->size);
-    ft_putstr(" bytes.\n");
+    ft_putendl(" bytes.");
     free(start);
     free(end);
 }
 
-char    *area_type_name(int area_index)
+void    *area_type_name(int area_index)
 {
     if (area_index == TINY)
-        return ("TINY");
+        ft_putstr("TINY");
     else if (area_index == SMALL)
-        return ("SMALL");
+        ft_putstr("SMALL");
     else
-        return ("LARGE");
+        ft_putstr("LARGE");
 }
 
 int		show_area_info(int area_index)
@@ -51,12 +51,11 @@ int		show_area_info(int area_index)
 	total_bytes = 0;
 	area = get_area(0) + area_index;
 	piece = area->first_piece;
-	ft_putstr(area_type_name(area_index));
+	area_type_name(area_index);
     adress = ft_itoa_base((uint64_t)(void*)area + AREA_META_BLOCK_SIZE, 16);
 	ft_putstr(" : 0x");
-    ft_putstr(adress);
+    ft_putendl(adress);
     free(adress);
-    ft_putstr("\n");
     if (area->first_piece && area->first_piece->is_free)
         ft_putendl("Area start : Not allocated.");
 	while (piece)
